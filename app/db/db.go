@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"log"
 
-	cfg "github.com/denniswon/validationcloud/app/config"
+	cfg "github.com/palmapp-xyz/evm-indexer/app/config"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"

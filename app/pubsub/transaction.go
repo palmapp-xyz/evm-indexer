@@ -8,7 +8,7 @@ import (
 	"sync"
 	"time"
 
-	d "github.com/denniswon/validationcloud/app/data"
+	d "github.com/palmapp-xyz/evm-indexer/app/data"
 	"github.com/go-redis/redis/v8"
 	"github.com/gorilla/websocket"
 	"gorm.io/gorm"

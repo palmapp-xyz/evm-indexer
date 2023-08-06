@@ -10,11 +10,11 @@ import (
 	"strconv"
 	"strings"
 
-	cmn "github.com/denniswon/validationcloud/app/common"
-	cfg "github.com/denniswon/validationcloud/app/config"
-	_db "github.com/denniswon/validationcloud/app/db"
-	"github.com/denniswon/validationcloud/app/rest/graph/generated"
-	"github.com/denniswon/validationcloud/app/rest/graph/model"
+	cmn "github.com/palmapp-xyz/evm-indexer/app/common"
+	cfg "github.com/palmapp-xyz/evm-indexer/app/config"
+	_db "github.com/palmapp-xyz/evm-indexer/app/db"
+	"github.com/palmapp-xyz/evm-indexer/app/rest/graph/generated"
+	"github.com/palmapp-xyz/evm-indexer/app/rest/graph/model"
 	"github.com/ethereum/go-ethereum/common"
 )
 

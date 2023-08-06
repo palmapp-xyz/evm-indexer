@@ -4,8 +4,8 @@ import (
 	"errors"
 	"log"
 
-	d "github.com/denniswon/validationcloud/app/data"
-	q "github.com/denniswon/validationcloud/app/queue"
+	d "github.com/palmapp-xyz/evm-indexer/app/data"
+	q "github.com/palmapp-xyz/evm-indexer/app/queue"
 	"gorm.io/gorm"
 )
 

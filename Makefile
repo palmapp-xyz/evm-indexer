@@ -11,7 +11,7 @@ graphql_gen:
 	pushd app/rest; gqlgen generate; popd
 
 build:
-	go build -o validationcloud
+	go build -o evm-indexer
 
 run: build
-	./validationcloud
+	./evm-indexer

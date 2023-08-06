@@ -4,8 +4,8 @@ import (
 	"context"
 	"log"
 
-	d "github.com/denniswon/validationcloud/app/data"
-	"github.com/denniswon/validationcloud/app/db"
+	d "github.com/palmapp-xyz/evm-indexer/app/data"
+	"github.com/palmapp-xyz/evm-indexer/app/db"
 )
 
 // PublishTxs - Publishes all transactions in a block to redis pubsub

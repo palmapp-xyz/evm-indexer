@@ -6,7 +6,7 @@ import (
 	"math"
 	"strings"
 
-	"github.com/denniswon/validationcloud/app/data"
+	"github.com/palmapp-xyz/evm-indexer/app/data"
 	"github.com/ethereum/go-ethereum/common"
 	"gorm.io/gorm"
 )

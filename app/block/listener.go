@@ -6,9 +6,9 @@ import (
 	"log"
 	"runtime"
 
-	cfg "github.com/denniswon/validationcloud/app/config"
-	d "github.com/denniswon/validationcloud/app/data"
-	q "github.com/denniswon/validationcloud/app/queue"
+	cfg "github.com/palmapp-xyz/evm-indexer/app/config"
+	d "github.com/palmapp-xyz/evm-indexer/app/data"
+	q "github.com/palmapp-xyz/evm-indexer/app/queue"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/gammazero/workerpool"

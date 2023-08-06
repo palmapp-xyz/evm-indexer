@@ -4,7 +4,7 @@ import (
 	"log"
 	"path/filepath"
 
-	"github.com/denniswon/validationcloud/app"
+	"github.com/palmapp-xyz/evm-indexer/app"
 )
 
 func main() {

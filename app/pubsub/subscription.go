@@ -6,7 +6,7 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/denniswon/validationcloud/app/data"
+	"github.com/palmapp-xyz/evm-indexer/app/data"
 )
 
 // SubscriptionRequest - Real time data subscription/ unsubscription request

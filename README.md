@@ -1,18 +1,22 @@
 <!-- omit in toc -->
-# ValidationCloud
 
-ValidationCloud is a service which uses the Ethereum JSON-RPC API to store the following information in a local datastore (postgres) for the most recent 50 blocks (or more) and provide REST and Graphql APIs:
+# evm-indexer
+
+evm-indexer is a service which uses the Ethereum JSON-RPC API to store the following information in a local datastore (postgres) for the most recent 50 blocks (or more) and provide REST and Graphql APIs:
 
 - Get and store **the block** and **all transaction hashes** in the block
 - Get and store all **events related to each transaction in each block**
 - Expose an endpoint that allows a user to **query all events related to a particular address**
 
 The services provided:
+
 - Historical data query
 - Real-time notification support
 
 <!-- omit in toc -->
+
 ## Overview
+
 - Sync up to latest state of blockchain
 - Listen for all happenings on Ethereum or EVM based blockchain
 - Persist all happenings in local database
@@ -30,7 +34,9 @@ The services provided:
 - Downside of using this feature is you might not get data back in response of query for certain block number, which just got mined but not finalized as per configured i.e. `BlockConfirmations` environment variable's value. Default value will be **0**.
 
 <!-- omit in toc -->
+
 ## Table of Contents
+
 - [Prerequisite](#prerequisite)
 - [Installation](#installation)
   - [.env configuration](#env-configuration)
@@ -44,20 +50,25 @@ The services provided:
   - [Real time notification for mined blocks](#real-time-notification-for-mined-blocks)
   - [Real time notification for transactions](#real-time-notification-for-transactions)
   - [Real-time notification for events](#real-time-notification-for-events)
+
 ## Prerequisite
+
 - Go _( >= 1.15 )_
 - Both **HTTP & Websocket** RPC connection endpoint required
+
   > Querying block, transaction, event log related data using HTTP
 
   > Listening for block mining events in real time over Websocket
+
 - Install & set up PostgreSQL. [guide](https://www.digitalocean.com/community/tutorials/how-to-install-and-use-postgresql-on-ubuntu-20-04).
-    > Enable `pgcrypto` extension on PostgreSQL Database.
 
-    > Create extension: `create extension pgcrypto;`
+  > Enable `pgcrypto` extension on PostgreSQL Database.
 
-    > Check extension: `\dx`
+  > Create extension: `create extension pgcrypto;`
 
-    > Make sure PostgreSQL has md5 authentication mechanism enabled.
+  > Check extension: `\dx`
+
+  > Make sure PostgreSQL has md5 authentication mechanism enabled.
 
 - Install and set up Redis [guide](https://www.digitalocean.com/community/tutorials/how-to-install-and-secure-redis-on-ubuntu-20-04).
   - Note : Redis **v6.0.6** is required
@@ -65,9 +76,9 @@ The services provided:
 ## Installation
 
 ```bash
-git clone git@github.com:denniswon/validationcloud.git
+git clone git@github.com:palmapp-xyz/evm-indexer.git
 
-cd validationcloud
+cd evm-indexer
 
 cp .env.example .env
 ```
@@ -77,6 +88,7 @@ cp .env.example .env
 - For testing historical data query using browser based GraphQL Playground, set `GraphQLPlayGround` to `yes` in config file
 
 - For processing block(s)/ tx(s) concurrently, it'll create `ConcurrencyFactor * #-of CPUs on machine` workers, who will pick up jobs submitted to them.
+
   - If nothing is specified, it defaults to 1 & assuming you're running on machine with 4 CPUs, it'll spawn worker pool of size 4. More than configured number of jobs can be submitted, only 4 can be running at max.
 
 - For delayed mode, set `BlockConfirmations` to some _number > 0_.
@@ -95,7 +107,7 @@ DB_USER=user
 DB_PASSWORD=password
 DB_HOST=x.x.x.x
 DB_PORT=5432
-DB_NAME=validationcloud
+DB_NAME=evm-indexer
 
 RedisConnection=tcp
 RedisAddress=x.x.x.x:6379
@@ -109,7 +121,7 @@ BlockRange=1000
 TimeRange=21600
 ```
 
-- Build `validationcloud`
+- Build `evm-indexer`
 
 ```bash
 go mod tidy
@@ -117,10 +129,10 @@ go mod tidy
 make build
 ```
 
-- Run `validationcloud`
+- Run `evm-indexer`
 
 ```bash
-./validationcloud
+./evm-indexer
 
 # or to build & run together
 make run
@@ -134,7 +146,6 @@ make run
 curl -s localhost:7000/v1/synced | jq
 ```
 
-
 ```json
 {
   "elapsed": "3m2.487237s",
@@ -146,7 +157,7 @@ curl -s localhost:7000/v1/synced | jq
 
 ## Usage
 
-`validationcloud` exposes REST & GraphQL API for querying historical block, transaction & event related data. It can also play role of real time notification engine, when subscribed to supported topics.
+`evm-indexer` exposes REST & GraphQL API for querying historical block, transaction & event related data. It can also play role of real time notification engine, when subscribed to supported topics.
 
 ### Historical Block Data ( REST API )
 
@@ -154,53 +165,53 @@ You can query historical block data with various combination of query string par
 
 **Path : `/v1/block`**
 
-Query Params | Method | Description
---- | --- | ---
-`hash=0x...&tx=yes` | GET | Fetch all transactions present in a block, when block hash is known
-`number=1&tx=yes` | GET | Fetch all transactions present in a block, when block number is known
-`hash=0x...` | GET | Fetch block by hash
-`number=1` | GET | Fetch block by number
-`fromBlock=1&toBlock=10` | GET | Fetch blocks by block number range _( max 10 at a time )_
-`fromTime=1604975929&toTime=1604975988` | GET | Fetch blocks by unix timestamp range _( max 60 seconds timespan )_
+| Query Params                            | Method | Description                                                           |
+| --------------------------------------- | ------ | --------------------------------------------------------------------- |
+| `hash=0x...&tx=yes`                     | GET    | Fetch all transactions present in a block, when block hash is known   |
+| `number=1&tx=yes`                       | GET    | Fetch all transactions present in a block, when block number is known |
+| `hash=0x...`                            | GET    | Fetch block by hash                                                   |
+| `number=1`                              | GET    | Fetch block by number                                                 |
+| `fromBlock=1&toBlock=10`                | GET    | Fetch blocks by block number range _( max 10 at a time )_             |
+| `fromTime=1604975929&toTime=1604975988` | GET    | Fetch blocks by unix timestamp range _( max 60 seconds timespan )_    |
 
 ### Historical Transaction Data ( REST API )
 
 **Path : `/v1/transaction`**
 
-Query Params | Method | Description
---- | --- | ---
-`hash=0x...` | GET | Fetch transaction by txHash
-`nonce=1&fromAccount=0x...` | GET | Fetch transaction, when tx sender's address & account nonce are known
-`fromBlock=1&toBlock=10&deployer=0x...` | GET | Find out what contracts are created by certain account within given block number range _( max 100 blocks )_
-`fromTime=1604975929&toTime=1604975988&deployer=0x...` | GET | Find out what contracts are created by certain account within given timestamp range _( max 600 seconds of timespan )_
-`fromBlock=1&toBlock=100&fromAccount=0x...&toAccount=0x...` | GET | Given block number range _( max 100 at a time )_ & a pair of accounts, can find out all tx performed between that pair, where `from` & `to` fields are fixed
-`fromTime=1604975929&toTime=1604975988&fromAccount=0x...&toAccount=0x...` | GET | Given time stamp range _( max 600 seconds of timespan )_ & a pair of accounts, can find out all tx performed between that pair, where `from` & `to` fields are fixed
-`fromBlock=1&toBlock=100&fromAccount=0x...` | GET | Given block number range _( max 100 at a time )_ & an account, can find out all tx performed from that account
-`fromTime=1604975929&toTime=1604975988&fromAccount=0x...` | GET | Given time stamp range _( max 600 seconds of span )_ & an account, can find out all tx performed from that account
-`fromBlock=1&toBlock=100&toAccount=0x...` | GET | Given block number range _( max 100 at a time )_ & an account, can find out all tx where target was this address
-`fromTime=1604975929&toTime=1604975988&toAccount=0x...` | GET | Given time stamp range _( max 600 seconds of span )_ & an account, can find out all tx where target was this address
+| Query Params                                                              | Method | Description                                                                                                                                                          |
+| ------------------------------------------------------------------------- | ------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `hash=0x...`                                                              | GET    | Fetch transaction by txHash                                                                                                                                          |
+| `nonce=1&fromAccount=0x...`                                               | GET    | Fetch transaction, when tx sender's address & account nonce are known                                                                                                |
+| `fromBlock=1&toBlock=10&deployer=0x...`                                   | GET    | Find out what contracts are created by certain account within given block number range _( max 100 blocks )_                                                          |
+| `fromTime=1604975929&toTime=1604975988&deployer=0x...`                    | GET    | Find out what contracts are created by certain account within given timestamp range _( max 600 seconds of timespan )_                                                |
+| `fromBlock=1&toBlock=100&fromAccount=0x...&toAccount=0x...`               | GET    | Given block number range _( max 100 at a time )_ & a pair of accounts, can find out all tx performed between that pair, where `from` & `to` fields are fixed         |
+| `fromTime=1604975929&toTime=1604975988&fromAccount=0x...&toAccount=0x...` | GET    | Given time stamp range _( max 600 seconds of timespan )_ & a pair of accounts, can find out all tx performed between that pair, where `from` & `to` fields are fixed |
+| `fromBlock=1&toBlock=100&fromAccount=0x...`                               | GET    | Given block number range _( max 100 at a time )_ & an account, can find out all tx performed from that account                                                       |
+| `fromTime=1604975929&toTime=1604975988&fromAccount=0x...`                 | GET    | Given time stamp range _( max 600 seconds of span )_ & an account, can find out all tx performed from that account                                                   |
+| `fromBlock=1&toBlock=100&toAccount=0x...`                                 | GET    | Given block number range _( max 100 at a time )_ & an account, can find out all tx where target was this address                                                     |
+| `fromTime=1604975929&toTime=1604975988&toAccount=0x...`                   | GET    | Given time stamp range _( max 600 seconds of span )_ & an account, can find out all tx where target was this address                                                 |
 
 ### Historical Event Data ( REST API )
 
 **Path : `/v1/event`**
 
-Query Params | Method | Description
---- | --- | ---
-`blockHash=0x...` | GET | Given blockhash, retrieves all events emitted by tx(s) present in block
-`blockHash=0x...&logIndex=1` | GET | Given blockhash and log index in block, attempts to retrieve associated event
-`blockNumber=123456&logIndex=2` | GET | Given block number and log index in block, attempts to retrieve associated event
-`txHash=0x...` | GET | Given txhash, retrieves all events emitted during execution of this transaction
-`count=50&contract=0x...` | GET | Returns last **x** _( <=50 )_ events emitted by this contract
-`fromBlock=1&toBlock=10&contract=0x...&topic0=0x...&topic1=0x...&topic2=0x...&topic3=0x...` | GET | Finding event(s) emitted from contract within given block range & also matching topic signatures _{0, 1, 2, 3}_
-`fromBlock=1&toBlock=10&contract=0x...&topic0=0x...&topic1=0x...&topic2=0x...` | GET | Finding event(s) emitted from contract within given block range & also matching topic signatures _{0, 1, 2}_
-`fromBlock=1&toBlock=10&contract=0x...&topic0=0x...&topic1=0x...` | GET | Finding event(s) emitted from contract within given block range & also matching topic signatures _{0, 1}_
-`fromBlock=1&toBlock=10&contract=0x...&topic0=0x...` | GET | Finding event(s) emitted from contract within given block range & also matching topic signatures _{0}_
-`fromBlock=1&toBlock=10&contract=0x...` | GET | Finding event(s) emitted from contract within given block range
-`fromTime=1604975929&toTime=1604975988&contract=0x...&topic0=0x...&topic1=0x...&topic2=0x...&topic3=0x...` | GET | Finding event(s) emitted from contract within given time stamp range & also matching topic signatures _{0, 1, 2, 3}_
-`fromTime=1604975929&toTime=1604975988&contract=0x...&topic0=0x...&topic1=0x...&topic2=0x...` | GET | Finding event(s) emitted from contract within given time stamp range & also matching topic signatures _{0, 1, 2}_
-`fromTime=1604975929&toTime=1604975988&contract=0x...&topic0=0x...&topic1=0x...` | GET | Finding event(s) emitted from contract within given time stamp range & also matching topic signatures _{0, 1}_
-`fromTime=1604975929&toTime=1604975988&contract=0x...&topic0=0x...` | GET | Finding event(s) emitted from contract within given time stamp range & also matching topic signatures _{0}_
-`fromTime=1604975929&toTime=1604975988&contract=0x...` | GET | Finding event(s) emitted from contract within given time stamp range
+| Query Params                                                                                               | Method | Description                                                                                                          |
+| ---------------------------------------------------------------------------------------------------------- | ------ | -------------------------------------------------------------------------------------------------------------------- |
+| `blockHash=0x...`                                                                                          | GET    | Given blockhash, retrieves all events emitted by tx(s) present in block                                              |
+| `blockHash=0x...&logIndex=1`                                                                               | GET    | Given blockhash and log index in block, attempts to retrieve associated event                                        |
+| `blockNumber=123456&logIndex=2`                                                                            | GET    | Given block number and log index in block, attempts to retrieve associated event                                     |
+| `txHash=0x...`                                                                                             | GET    | Given txhash, retrieves all events emitted during execution of this transaction                                      |
+| `count=50&contract=0x...`                                                                                  | GET    | Returns last **x** _( <=50 )_ events emitted by this contract                                                        |
+| `fromBlock=1&toBlock=10&contract=0x...&topic0=0x...&topic1=0x...&topic2=0x...&topic3=0x...`                | GET    | Finding event(s) emitted from contract within given block range & also matching topic signatures _{0, 1, 2, 3}_      |
+| `fromBlock=1&toBlock=10&contract=0x...&topic0=0x...&topic1=0x...&topic2=0x...`                             | GET    | Finding event(s) emitted from contract within given block range & also matching topic signatures _{0, 1, 2}_         |
+| `fromBlock=1&toBlock=10&contract=0x...&topic0=0x...&topic1=0x...`                                          | GET    | Finding event(s) emitted from contract within given block range & also matching topic signatures _{0, 1}_            |
+| `fromBlock=1&toBlock=10&contract=0x...&topic0=0x...`                                                       | GET    | Finding event(s) emitted from contract within given block range & also matching topic signatures _{0}_               |
+| `fromBlock=1&toBlock=10&contract=0x...`                                                                    | GET    | Finding event(s) emitted from contract within given block range                                                      |
+| `fromTime=1604975929&toTime=1604975988&contract=0x...&topic0=0x...&topic1=0x...&topic2=0x...&topic3=0x...` | GET    | Finding event(s) emitted from contract within given time stamp range & also matching topic signatures _{0, 1, 2, 3}_ |
+| `fromTime=1604975929&toTime=1604975988&contract=0x...&topic0=0x...&topic1=0x...&topic2=0x...`              | GET    | Finding event(s) emitted from contract within given time stamp range & also matching topic signatures _{0, 1, 2}_    |
+| `fromTime=1604975929&toTime=1604975988&contract=0x...&topic0=0x...&topic1=0x...`                           | GET    | Finding event(s) emitted from contract within given time stamp range & also matching topic signatures _{0, 1}_       |
+| `fromTime=1604975929&toTime=1604975988&contract=0x...&topic0=0x...`                                        | GET    | Finding event(s) emitted from contract within given time stamp range & also matching topic signatures _{0}_          |
+| `fromTime=1604975929&toTime=1604975988&contract=0x...`                                                     | GET    | Finding event(s) emitted from contract within given time stamp range                                                 |
 
 ### Historical Block Data ( GraphQL API )
 
@@ -212,10 +223,10 @@ You can query block data using GraphQL API.
 
 ```graphql
 type Query {
-    blockByHash(hash: String!): Block!
-    blockByNumber(number: String!): Block!
-    blocksByNumberRange(from: String!, to: String!): [Block!]!
-    blocksByTimeRange(from: String!, to: String!): [Block!]!
+  blockByHash(hash: String!): Block!
+  blockByNumber(number: String!): Block!
+  blocksByNumberRange(from: String!, to: String!): [Block!]!
+  blocksByTimeRange(from: String!, to: String!): [Block!]!
 }
 ```
 
@@ -238,12 +249,12 @@ type Block {
 }
 ```
 
-Method | Parameters | Possible use case
---- | --- | ---
-`blockByHash` | hash: String! | When you know block hash & want to get whole block data back
-`blockByNumber` | number: String! | When you know block number & want to get whole block data back
-`blocksByNumberRange` | from: String!, to: String! | When you've a block number range & want to get all blocks in that range, in a single call
-`blocksByTimeRange` | from: String!, to: String! | When you've unix timestamp range & want to get all blocks in that range, in a single call
+| Method                | Parameters                 | Possible use case                                                                         |
+| --------------------- | -------------------------- | ----------------------------------------------------------------------------------------- |
+| `blockByHash`         | hash: String!              | When you know block hash & want to get whole block data back                              |
+| `blockByNumber`       | number: String!            | When you know block number & want to get whole block data back                            |
+| `blocksByNumberRange` | from: String!, to: String! | When you've a block number range & want to get all blocks in that range, in a single call |
+| `blocksByTimeRange`   | from: String!, to: String! | When you've unix timestamp range & want to get all blocks in that range, in a single call |
 
 ---
 
@@ -255,35 +266,98 @@ Method | Parameters | Possible use case
 
 ```graphql
 type Query {
-    transaction(hash: String!): Transaction!
-  
-    transactionCountByBlockHash(hash: String!): Int!
-    transactionsByBlockHash(hash: String!): [Transaction!]!
-  
-    transactionCountByBlockNumber(number: String!): Int!
-    transactionsByBlockNumber(number: String!): [Transaction!]!
-  
-    transactionCountFromAccountByNumberRange(account: String!, from: String!, to: String!): Int!
-    transactionsFromAccountByNumberRange(account: String!, from: String!, to: String!): [Transaction!]!
-  
-    transactionCountFromAccountByTimeRange(account: String!, from: String!, to: String!): Int!
-    transactionsFromAccountByTimeRange(account: String!, from: String!, to: String!): [Transaction!]!
-  
-    transactionCountToAccountByNumberRange(account: String!, from: String!, to: String!): Int!
-    transactionsToAccountByNumberRange(account: String!, from: String!, to: String!): [Transaction!]!
+  transaction(hash: String!): Transaction!
 
-    transactionCountToAccountByTimeRange(account: String!, from: String!, to: String!): Int!
-    transactionsToAccountByTimeRange(account: String!, from: String!, to: String!): [Transaction!]!
+  transactionCountByBlockHash(hash: String!): Int!
+  transactionsByBlockHash(hash: String!): [Transaction!]!
 
-    transactionCountBetweenAccountsByNumberRange(fromAccount: String!, toAccount: String!, from: String!, to: String!): Int!
-    transactionsBetweenAccountsByNumberRange(fromAccount: String!, toAccount: String!, from: String!, to: String!): [Transaction!]!
+  transactionCountByBlockNumber(number: String!): Int!
+  transactionsByBlockNumber(number: String!): [Transaction!]!
 
-    transactionCountBetweenAccountsByTimeRange(fromAccount: String!, toAccount: String!, from: String!, to: String!): Int!
-    transactionsBetweenAccountsByTimeRange(fromAccount: String!, toAccount: String!, from: String!, to: String!): [Transaction!]!
+  transactionCountFromAccountByNumberRange(
+    account: String!
+    from: String!
+    to: String!
+  ): Int!
+  transactionsFromAccountByNumberRange(
+    account: String!
+    from: String!
+    to: String!
+  ): [Transaction!]!
 
-    contractsCreatedFromAccountByNumberRange(account: String!, from: String!, to: String!): [Transaction!]!
-    contractsCreatedFromAccountByTimeRange(account: String!, from: String!, to: String!): [Transaction!]!
-    transactionFromAccountWithNonce(account: String!, nonce: String!): Transaction!
+  transactionCountFromAccountByTimeRange(
+    account: String!
+    from: String!
+    to: String!
+  ): Int!
+  transactionsFromAccountByTimeRange(
+    account: String!
+    from: String!
+    to: String!
+  ): [Transaction!]!
+
+  transactionCountToAccountByNumberRange(
+    account: String!
+    from: String!
+    to: String!
+  ): Int!
+  transactionsToAccountByNumberRange(
+    account: String!
+    from: String!
+    to: String!
+  ): [Transaction!]!
+
+  transactionCountToAccountByTimeRange(
+    account: String!
+    from: String!
+    to: String!
+  ): Int!
+  transactionsToAccountByTimeRange(
+    account: String!
+    from: String!
+    to: String!
+  ): [Transaction!]!
+
+  transactionCountBetweenAccountsByNumberRange(
+    fromAccount: String!
+    toAccount: String!
+    from: String!
+    to: String!
+  ): Int!
+  transactionsBetweenAccountsByNumberRange(
+    fromAccount: String!
+    toAccount: String!
+    from: String!
+    to: String!
+  ): [Transaction!]!
+
+  transactionCountBetweenAccountsByTimeRange(
+    fromAccount: String!
+    toAccount: String!
+    from: String!
+    to: String!
+  ): Int!
+  transactionsBetweenAccountsByTimeRange(
+    fromAccount: String!
+    toAccount: String!
+    from: String!
+    to: String!
+  ): [Transaction!]!
+
+  contractsCreatedFromAccountByNumberRange(
+    account: String!
+    from: String!
+    to: String!
+  ): [Transaction!]!
+  contractsCreatedFromAccountByTimeRange(
+    account: String!
+    from: String!
+    to: String!
+  ): [Transaction!]!
+  transactionFromAccountWithNonce(
+    account: String!
+    nonce: String!
+  ): Transaction!
 }
 ```
 
@@ -306,28 +380,28 @@ type Transaction {
 }
 ```
 
-Method | Parameters | Possible use case
---- | --- | ---
-`transaction` | hash: String! | When you know txHash & want to get that tx data
-`transactionCountByBlockHash` | hash: String! | When you know block hash & want to get count of tx(s) packed in that block
-`transactionsByBlockHash` | hash: String! | When you know block hash & want to get all tx(s) packed in that block
-`transactionCountByBlockNumber` | number: String! | When you know block number & want to get count of tx(s) packed in that block
-`transactionsByBlockNumber` | number: String! | When you know block number & want to get all tx(s) packed in that block
-`transactionCountFromAccountByNumberRange` | account: String!, from: String!, to: String! | When you know tx sender address, block number range & want to find out how many tx(s) were sent by this address in that certain block number range
-`transactionsFromAccountByNumberRange` | account: String!, from: String!, to: String! | When you know tx sender address, block number range & want to find out all tx(s) that were sent by this address in that certain block number range
-`transactionCountFromAccountByTimeRange` | account: String!, from: String!, to: String! | When you know tx sender address, unix time stamp range & want to find out how many tx(s) were sent by this address in that certain timespan
-`transactionsFromAccountByTimeRange` | account: String!, from: String!, to: String! | When you know tx sender address, unix time stamp range & want to find out all tx(s) that were sent by this address in that certain timespan
-`transactionCountToAccountByNumberRange` | account: String!, from: String!, to: String! | When you know tx receiver address, block number range & want to find out how many tx(s) were sent to this address in that certain block number range
-`transactionsToAccountByNumberRange` | account: String!, from: String!, to: String! | When you know tx receiver address, block number range & want to find out all tx(s) that were sent to this address in that certain block number range
-`transactionCountToAccountByTimeRange` | account: String!, from: String!, to: String! | When you know tx receiver address, unix time stamp range & want to find out how many tx(s) were sent to this address in that certain timespan
-`transactionsToAccountByTimeRange` | account: String!, from: String!, to: String! | When you know tx receiver address, unix time stamp range & want to find out all tx(s) that were sent to this address in that certain timespan
-`transactionCountBetweenAccountsByNumberRange` | fromAccount: String!, toAccount: String!, from: String!, to: String! | When you know tx sender & receiver addresses, block number range & want to find out how many tx(s) were sent from sender to receiver in that certain block number range
-`transactionsBetweenAccountsByNumberRange` | fromAccount: String!, toAccount: String!, from: String!, to: String! | When you know tx sender & receiver addresses, block number range & want to find out all tx(s) that were sent from sender to receiver in that certain block number range
-`transactionCountBetweenAccountsByTimeRange` | fromAccount: String!, toAccount: String!, from: String!, to: String! | When you know tx sender & receiver addresses, unix timestamp range & want to find out how many tx(s) were sent from sender to receiver in that certain timespan
-`transactionsBetweenAccountsByTimeRange` | fromAccount: String!, toAccount: String!, from: String!, to: String! | When you know tx sender & receiver addresses, unix timestamp range & want to find out all tx(s) that were sent from sender to receiver in that certain timespan
-`contractsCreatedFromAccountByNumberRange` | account: String!, from: String!, to: String! | When you know EOA's _( externally owned account )_ address & want to find out all contracts created by that account in block number range
-`contractsCreatedFromAccountByTimeRange` | account: String!, from: String!, to: String! | When you know EOA's _( externally owned account )_ address & want to find out all contracts created by that account in certain time span
-`transactionFromAccountWithNonce` | account: String!, nonce: String! | When you have EOA's address & nonce value of it, you can pin point to that tx. This can be used to iterate through all tx(s) from this account, by updating nonce.
+| Method                                         | Parameters                                                           | Possible use case                                                                                                                                                       |
+| ---------------------------------------------- | -------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `transaction`                                  | hash: String!                                                        | When you know txHash & want to get that tx data                                                                                                                         |
+| `transactionCountByBlockHash`                  | hash: String!                                                        | When you know block hash & want to get count of tx(s) packed in that block                                                                                              |
+| `transactionsByBlockHash`                      | hash: String!                                                        | When you know block hash & want to get all tx(s) packed in that block                                                                                                   |
+| `transactionCountByBlockNumber`                | number: String!                                                      | When you know block number & want to get count of tx(s) packed in that block                                                                                            |
+| `transactionsByBlockNumber`                    | number: String!                                                      | When you know block number & want to get all tx(s) packed in that block                                                                                                 |
+| `transactionCountFromAccountByNumberRange`     | account: String!, from: String!, to: String!                         | When you know tx sender address, block number range & want to find out how many tx(s) were sent by this address in that certain block number range                      |
+| `transactionsFromAccountByNumberRange`         | account: String!, from: String!, to: String!                         | When you know tx sender address, block number range & want to find out all tx(s) that were sent by this address in that certain block number range                      |
+| `transactionCountFromAccountByTimeRange`       | account: String!, from: String!, to: String!                         | When you know tx sender address, unix time stamp range & want to find out how many tx(s) were sent by this address in that certain timespan                             |
+| `transactionsFromAccountByTimeRange`           | account: String!, from: String!, to: String!                         | When you know tx sender address, unix time stamp range & want to find out all tx(s) that were sent by this address in that certain timespan                             |
+| `transactionCountToAccountByNumberRange`       | account: String!, from: String!, to: String!                         | When you know tx receiver address, block number range & want to find out how many tx(s) were sent to this address in that certain block number range                    |
+| `transactionsToAccountByNumberRange`           | account: String!, from: String!, to: String!                         | When you know tx receiver address, block number range & want to find out all tx(s) that were sent to this address in that certain block number range                    |
+| `transactionCountToAccountByTimeRange`         | account: String!, from: String!, to: String!                         | When you know tx receiver address, unix time stamp range & want to find out how many tx(s) were sent to this address in that certain timespan                           |
+| `transactionsToAccountByTimeRange`             | account: String!, from: String!, to: String!                         | When you know tx receiver address, unix time stamp range & want to find out all tx(s) that were sent to this address in that certain timespan                           |
+| `transactionCountBetweenAccountsByNumberRange` | fromAccount: String!, toAccount: String!, from: String!, to: String! | When you know tx sender & receiver addresses, block number range & want to find out how many tx(s) were sent from sender to receiver in that certain block number range |
+| `transactionsBetweenAccountsByNumberRange`     | fromAccount: String!, toAccount: String!, from: String!, to: String! | When you know tx sender & receiver addresses, block number range & want to find out all tx(s) that were sent from sender to receiver in that certain block number range |
+| `transactionCountBetweenAccountsByTimeRange`   | fromAccount: String!, toAccount: String!, from: String!, to: String! | When you know tx sender & receiver addresses, unix timestamp range & want to find out how many tx(s) were sent from sender to receiver in that certain timespan         |
+| `transactionsBetweenAccountsByTimeRange`       | fromAccount: String!, toAccount: String!, from: String!, to: String! | When you know tx sender & receiver addresses, unix timestamp range & want to find out all tx(s) that were sent from sender to receiver in that certain timespan         |
+| `contractsCreatedFromAccountByNumberRange`     | account: String!, from: String!, to: String!                         | When you know EOA's _( externally owned account )_ address & want to find out all contracts created by that account in block number range                               |
+| `contractsCreatedFromAccountByTimeRange`       | account: String!, from: String!, to: String!                         | When you know EOA's _( externally owned account )_ address & want to find out all contracts created by that account in certain time span                                |
+| `transactionFromAccountWithNonce`              | account: String!, nonce: String!                                     | When you have EOA's address & nonce value of it, you can pin point to that tx. This can be used to iterate through all tx(s) from this account, by updating nonce.      |
 
 ---
 
@@ -339,15 +413,33 @@ Method | Parameters | Possible use case
 
 ```graphql
 type Query {
-    eventsFromContractByNumberRange(contract: String!, from: String!, to: String!): [Event!]!
-    eventsFromContractByTimeRange(contract: String!, from: String!, to: String!): [Event!]!
-    eventsByBlockHash(hash: String!): [Event!]!
-    eventsByTxHash(hash: String!): [Event!]!
-    eventsFromContractWithTopicsByNumberRange(contract: String!, from: String!, to: String!, topics: [String!]!): [Event!]!
-    eventsFromContractWithTopicsByTimeRange(contract: String!, from: String!, to: String!, topics: [String!]!): [Event!]!
-    lastXEventsFromContract(contract: String!, x: Int!): [Event!]!
-    eventByBlockHashAndLogIndex(hash: String!, index: String!): Event!
-    eventByBlockNumberAndLogIndex(number: String!, index: String!): Event!
+  eventsFromContractByNumberRange(
+    contract: String!
+    from: String!
+    to: String!
+  ): [Event!]!
+  eventsFromContractByTimeRange(
+    contract: String!
+    from: String!
+    to: String!
+  ): [Event!]!
+  eventsByBlockHash(hash: String!): [Event!]!
+  eventsByTxHash(hash: String!): [Event!]!
+  eventsFromContractWithTopicsByNumberRange(
+    contract: String!
+    from: String!
+    to: String!
+    topics: [String!]!
+  ): [Event!]!
+  eventsFromContractWithTopicsByTimeRange(
+    contract: String!
+    from: String!
+    to: String!
+    topics: [String!]!
+  ): [Event!]!
+  lastXEventsFromContract(contract: String!, x: Int!): [Event!]!
+  eventByBlockHashAndLogIndex(hash: String!, index: String!): Event!
+  eventByBlockNumberAndLogIndex(number: String!, index: String!): Event!
 }
 ```
 
@@ -364,17 +456,17 @@ type Event {
 }
 ```
 
-Method | Parameters | Possible use case
---- | --- | ---
-`eventsFromContractByNumberRange` | contract: String!, from: String!, to: String! | When you've one contract address, block number range & you want to find out all events emitted by that contract in given block range
-`eventsFromContractByTimeRange` | contract: String!, from: String!, to: String! | When you know contract address, unix time stamp range & you want to find out all events emitted by that contract in given timespan
-`eventsByBlockHash` | hash: String! | When you've block hash & want to find out all events emitted in tx(s) packed in that block
-`eventsByTxHash` | hash: String! | When you've txHash & want to find out all events emitted during execution of that tx
-`eventsFromContractWithTopicsByNumberRange` | contract: String!, from: String!, to: String!, topics: [String!]! | When you've smart contract address, block number range & an ordered list of event log's topic signature(s), you can find out all events emitted by that contract with specific signature(s) in block range
-`eventsFromContractWithTopicsByTimeRange` | contract: String!, from: String!, to: String!, topics: [String!]! | When you've smart contract address, unix time stamp range & an ordered list of event log's topic signature(s), you can find out all events emitted by that contract with specific signature(s) in given timespan
-`lastXEventsFromContract` | contract: String!, x: Int! | When you know just contract address & want to find out last **X** events emitted by that contract **[ Very useful sometimes 😅 ]**
-`eventByBlockHashAndLogIndex` | hash: String!, index: String! | When you know block hash, index of event log in block & want to get back specific event in that position
-`eventByBlockHashAndLogIndex` | number: String!, index: String! | When you know block number, index of event log in block & want to get back specific event in that position
+| Method                                      | Parameters                                                        | Possible use case                                                                                                                                                                                                |
+| ------------------------------------------- | ----------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `eventsFromContractByNumberRange`           | contract: String!, from: String!, to: String!                     | When you've one contract address, block number range & you want to find out all events emitted by that contract in given block range                                                                             |
+| `eventsFromContractByTimeRange`             | contract: String!, from: String!, to: String!                     | When you know contract address, unix time stamp range & you want to find out all events emitted by that contract in given timespan                                                                               |
+| `eventsByBlockHash`                         | hash: String!                                                     | When you've block hash & want to find out all events emitted in tx(s) packed in that block                                                                                                                       |
+| `eventsByTxHash`                            | hash: String!                                                     | When you've txHash & want to find out all events emitted during execution of that tx                                                                                                                             |
+| `eventsFromContractWithTopicsByNumberRange` | contract: String!, from: String!, to: String!, topics: [String!]! | When you've smart contract address, block number range & an ordered list of event log's topic signature(s), you can find out all events emitted by that contract with specific signature(s) in block range       |
+| `eventsFromContractWithTopicsByTimeRange`   | contract: String!, from: String!, to: String!, topics: [String!]! | When you've smart contract address, unix time stamp range & an ordered list of event log's topic signature(s), you can find out all events emitted by that contract with specific signature(s) in given timespan |
+| `lastXEventsFromContract`                   | contract: String!, x: Int!                                        | When you know just contract address & want to find out last **X** events emitted by that contract **[ Very useful sometimes 😅 ]**                                                                               |
+| `eventByBlockHashAndLogIndex`               | hash: String!, index: String!                                     | When you know block hash, index of event log in block & want to get back specific event in that position                                                                                                         |
+| `eventByBlockHashAndLogIndex`               | number: String!, index: String!                                   | When you know block number, index of event log in block & want to get back specific event in that position                                                                                                       |
 
 ---
 
@@ -388,8 +480,8 @@ For listening to blocks getting mined, connect to `/v1/ws` endpoint using websoc
 
 ```json
 {
-    "name": "block",
-    "type": "subscribe",
+  "name": "block",
+  "type": "subscribe"
 }
 ```
 
@@ -397,8 +489,8 @@ Subscription confirmeation response _( JSON encoded )_
 
 ```json
 {
-    "code": 1,
-    "message": "Subscribed to `block`"
+  "code": 1,
+  "message": "Subscribed to `block`"
 }
 ```
 
@@ -425,9 +517,9 @@ Cancel subscription:
 
 ```json
 {
-    "name": "block",
-    "type": "unsubscribe",
-    "apiKey": "0x..."
+  "name": "block",
+  "type": "unsubscribe",
+  "apiKey": "0x..."
 }
 ```
 
@@ -435,8 +527,8 @@ Unsubscription confirmation response:
 
 ```json
 {
-    "code": 1,
-    "message": "Unsubscribed from `block`"
+  "code": 1,
+  "message": "Unsubscribed from `block`"
 }
 ```
 
@@ -444,8 +536,8 @@ Unsubscription confirmation response:
 
 ```json
 {
-    "name": "transaction/<from-address>/<to-address>",
-    "type": "subscribe",
+  "name": "transaction/<from-address>/<to-address>",
+  "type": "subscribe"
 }
 ```
 
@@ -455,9 +547,9 @@ Unsubscription confirmation response:
 
 ```json
 {
-    "name": "transaction/*/*",
-    "type": "subscribe",
-    "apiKey": "0x..."
+  "name": "transaction/*/*",
+  "type": "subscribe",
+  "apiKey": "0x..."
 }
 ```
 
@@ -465,9 +557,9 @@ Unsubscription confirmation response:
 
 ```json
 {
-    "name": "transaction/0x4774fEd3f2838f504006BE53155cA9cbDDEe9f0c/*",
-    "type": "subscribe",
-    "apiKey": "0x..."
+  "name": "transaction/0x4774fEd3f2838f504006BE53155cA9cbDDEe9f0c/*",
+  "type": "subscribe",
+  "apiKey": "0x..."
 }
 ```
 
@@ -475,9 +567,9 @@ Unsubscription confirmation response:
 
 ```json
 {
-    "name": "transaction/*/0x4774fEd3f2838f504006BE53155cA9cbDDEe9f0c",
-    "type": "subscribe",
-    "apiKey": "0x..."
+  "name": "transaction/*/0x4774fEd3f2838f504006BE53155cA9cbDDEe9f0c",
+  "type": "subscribe",
+  "apiKey": "0x..."
 }
 ```
 
@@ -485,18 +577,19 @@ Unsubscription confirmation response:
 
 ```json
 {
-    "name": "transaction/0xc9D50e0a571aDd06C7D5f1452DcE2F523FB711a1/0x4774fEd3f2838f504006BE53155cA9cbDDEe9f0c",
-    "type": "subscribe",
-    "apiKey": "0x..."
+  "name": "transaction/0xc9D50e0a571aDd06C7D5f1452DcE2F523FB711a1/0x4774fEd3f2838f504006BE53155cA9cbDDEe9f0c",
+  "type": "subscribe",
+  "apiKey": "0x..."
 }
 ```
+
 Subscription confirmation response _( JSON encoded )_
 
 ```json
 {
-    "code": 1,
-    "message": "Subscribed to `transaction`",
-    "apiKey": "0x..."
+  "code": 1,
+  "message": "Subscribed to `transaction`",
+  "apiKey": "0x..."
 }
 ```
 
@@ -523,9 +616,9 @@ Cancel subscription:
 
 ```json
 {
-    "name": "transaction/<from-address>/<to-address>",
-    "type": "unsubscribe",
-    "apiKey": "0x..."
+  "name": "transaction/<from-address>/<to-address>",
+  "type": "unsubscribe",
+  "apiKey": "0x..."
 }
 ```
 
@@ -533,8 +626,8 @@ Unsubscription confirmation response:
 
 ```json
 {
-    "code": 1,
-    "message": "Unsubscribed from `transaction`"
+  "code": 1,
+  "message": "Unsubscribed from `transaction`"
 }
 ```
 
@@ -542,9 +635,9 @@ Unsubscription confirmation response:
 
 ```json
 {
-    "name": "event/<contract-address>/<topic-0-signature>/<topic-1-signature>/<topic-2-signature>/<topic-3-signature>",
-    "type": "subscribe",
-    "apiKey": "0x..."
+  "name": "event/<contract-address>/<topic-0-signature>/<topic-1-signature>/<topic-2-signature>/<topic-3-signature>",
+  "type": "subscribe",
+  "apiKey": "0x..."
 }
 ```
 
@@ -554,9 +647,9 @@ Unsubscription confirmation response:
 
 ```json
 {
-    "name": "event/*/*/*/*/*",
-    "type": "subscribe",
-    "apiKey": "0x..."
+  "name": "event/*/*/*/*/*",
+  "type": "subscribe",
+  "apiKey": "0x..."
 }
 ```
 
@@ -564,9 +657,9 @@ Unsubscription confirmation response:
 
 ```json
 {
-    "name": "event/0xcb3fA413B23b12E402Cfcd8FA120f983FB70d8E8/*/*/*/*",
-    "type": "subscribe",
-    "apiKey": "0x..."
+  "name": "event/0xcb3fA413B23b12E402Cfcd8FA120f983FB70d8E8/*/*/*/*",
+  "type": "subscribe",
+  "apiKey": "0x..."
 }
 ```
 
@@ -574,9 +667,9 @@ Unsubscription confirmation response:
 
 ```json
 {
-    "name": "event/0xcb3fA413B23b12E402Cfcd8FA120f983FB70d8E8/0x2ab93f65628379309f36cb125e90d7c902454a545c4f8b8cb0794af75c24b807/*/*/*",
-    "type": "subscribe",
-    "apiKey": "0x..."
+  "name": "event/0xcb3fA413B23b12E402Cfcd8FA120f983FB70d8E8/0x2ab93f65628379309f36cb125e90d7c902454a545c4f8b8cb0794af75c24b807/*/*/*",
+  "type": "subscribe",
+  "apiKey": "0x..."
 }
 ```
 
@@ -584,9 +677,9 @@ Unsubscription confirmation response:
 
 ```json
 {
-    "name": "event/*/0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef/*/*/*",
-    "type": "subscribe",
-    "apiKey": "0x..."
+  "name": "event/*/0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef/*/*/*",
+  "type": "subscribe",
+  "apiKey": "0x..."
 }
 ```
 
@@ -594,8 +687,8 @@ Subscription confirmation JSON encoded response
 
 ```json
 {
-    "code": 1,
-    "message": "Subscribed to `event`"
+  "code": 1,
+  "message": "Subscribed to `event`"
 }
 ```
 
@@ -621,9 +714,9 @@ Cancel subscription:
 
 ```json
 {
-    "name": "event/<contract-address>/<topic-0-signature>/<topic-1-signature>/<topic-2-signature>/<topic-3-signature>",
-    "type": "unsubscribe",
-    "apiKey": "0x..."
+  "name": "event/<contract-address>/<topic-0-signature>/<topic-1-signature>/<topic-2-signature>/<topic-3-signature>",
+  "type": "unsubscribe",
+  "apiKey": "0x..."
 }
 ```
 
@@ -631,45 +724,58 @@ Unsubscription confirmation response:
 
 ```json
 {
-    "code": 1,
-    "message": "Unsubscribed from `event`"
+  "code": 1,
+  "message": "Unsubscribed from `event`"
 }
 ```
 
 > Note: If graceful unsubscription not done, if client unreachable, client subscription will get removed
 
 <!-- omit in toc -->
+
 ## Notes:
 
 - Code is written in Go
 
 <!-- omit in toc -->
+
 ### Thought process and code design
+
 - Concurrency support using event request queue
 
 <!-- omit in toc -->
+
 ### Technology choices
+
 - Postgres for persistant local storage
 - Redis for pubsub
 - graphql for api
 - go-ethereum ethclient for blockchain communication
 
 <!-- omit in toc -->
+
 ### How would you keep the data set up to date?
+
 - ethclient websocket listening for new blocks
 
 <!-- omit in toc -->
+
 ### How would you expose the stored data to customers in an easy-to-query API?
+
 - Rest API using GraphQL
 
 <!-- omit in toc -->
+
 ### How would you handle security of the API?
+
 - postgres and redis authentication
 - API key for users
 - API delivery stats and history
 
 <!-- omit in toc -->
+
 ### How would you improve the performance of your approach?
+
 - First vertical scaling
 - Then horizontal scaling with transition to more distributed architecture
 - Redis to Kafka for pubsub
@@ -681,7 +787,9 @@ Unsubscription confirmation response:
 - Subscription plan with tiers
 
 <!-- omit in toc -->
+
 ### How would you adapt your design to store the same data for the entire history of Ethereum Mainnet?
+
 - Snapshotting for scalability, add support for features to take snapshots of the db and restore from snapshots
 - Snapshotting also useful for migrating to different machine or setting up new instance,to avoid a lengthy whole chain data syncing.
 
@@ -689,7 +797,9 @@ Unsubscription confirmation response:
 - tx and event assoicated address sharding and indexing
 
 <!-- omit in toc -->
+
 ### What would it take to deploy and monitor a service like this in production?
+
 - Kubernetes, Terraform and Ansible
 - Integration and monitoring tests
 - Grafana, Amplitude, Sentry, Pagerduty

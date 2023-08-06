@@ -5,11 +5,11 @@ import (
 	"log"
 	"sync"
 
-	cfg "github.com/denniswon/validationcloud/app/config"
-	d "github.com/denniswon/validationcloud/app/data"
-	"github.com/denniswon/validationcloud/app/db"
-	q "github.com/denniswon/validationcloud/app/queue"
-	"github.com/denniswon/validationcloud/app/rest/graph"
+	cfg "github.com/palmapp-xyz/evm-indexer/app/config"
+	d "github.com/palmapp-xyz/evm-indexer/app/data"
+	"github.com/palmapp-xyz/evm-indexer/app/db"
+	q "github.com/palmapp-xyz/evm-indexer/app/queue"
+	"github.com/palmapp-xyz/evm-indexer/app/rest/graph"
 	"github.com/go-redis/redis/v8"
 	"gorm.io/gorm"
 )

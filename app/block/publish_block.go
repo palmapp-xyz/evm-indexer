@@ -4,8 +4,8 @@ import (
 	"context"
 	"log"
 
-	d "github.com/denniswon/validationcloud/app/data"
-	"github.com/denniswon/validationcloud/app/db"
+	d "github.com/palmapp-xyz/evm-indexer/app/data"
+	"github.com/palmapp-xyz/evm-indexer/app/db"
 )
 
 // PublishBlock - Attempts to publish block data to Redis pubsub channel

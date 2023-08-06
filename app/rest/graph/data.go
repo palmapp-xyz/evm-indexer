@@ -7,8 +7,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/denniswon/validationcloud/app/data"
-	"github.com/denniswon/validationcloud/app/rest/graph/model"
+	"github.com/palmapp-xyz/evm-indexer/app/data"
+	"github.com/palmapp-xyz/evm-indexer/app/rest/graph/model"
 	"github.com/gin-gonic/gin"
 	"github.com/lib/pq"
 	"gorm.io/gorm"

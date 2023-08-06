@@ -5,9 +5,9 @@ import (
 	"runtime"
 	"time"
 
-	cfg "github.com/denniswon/validationcloud/app/config"
-	d "github.com/denniswon/validationcloud/app/data"
-	q "github.com/denniswon/validationcloud/app/queue"
+	cfg "github.com/palmapp-xyz/evm-indexer/app/config"
+	d "github.com/palmapp-xyz/evm-indexer/app/data"
+	q "github.com/palmapp-xyz/evm-indexer/app/queue"
 	"github.com/ethereum/go-ethereum/ethclient"
 	"github.com/gammazero/workerpool"
 	"gorm.io/gorm"

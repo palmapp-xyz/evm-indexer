@@ -1,4 +1,4 @@
-module github.com/denniswon/validationcloud
+module github.com/palmapp-xyz/evm-indexer
 
 go 1.20
 

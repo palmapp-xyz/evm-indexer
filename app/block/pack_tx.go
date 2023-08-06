@@ -1,8 +1,8 @@
 package block
 
 import (
-	c "github.com/denniswon/validationcloud/app/common"
-	"github.com/denniswon/validationcloud/app/db"
+	c "github.com/palmapp-xyz/evm-indexer/app/common"
+	"github.com/palmapp-xyz/evm-indexer/app/db"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
 )

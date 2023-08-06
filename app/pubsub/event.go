@@ -8,7 +8,7 @@ import (
 	"sync"
 	"time"
 
-	d "github.com/denniswon/validationcloud/app/data"
+	d "github.com/palmapp-xyz/evm-indexer/app/data"
 	"github.com/lib/pq"
 	"gorm.io/gorm"
 

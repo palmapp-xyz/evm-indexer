@@ -5,7 +5,7 @@ import (
 	"math"
 	"time"
 
-	"github.com/denniswon/validationcloud/app/config"
+	"github.com/palmapp-xyz/evm-indexer/app/config"
 )
 
 // You don’t have unlimited resource on your machine, the minimal size of a goroutine object is 2 KB,

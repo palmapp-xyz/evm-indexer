@@ -6,9 +6,9 @@ import (
 	"math/big"
 	"time"
 
-	d "github.com/denniswon/validationcloud/app/data"
-	"github.com/denniswon/validationcloud/app/db"
-	q "github.com/denniswon/validationcloud/app/queue"
+	d "github.com/palmapp-xyz/evm-indexer/app/data"
+	"github.com/palmapp-xyz/evm-indexer/app/db"
+	q "github.com/palmapp-xyz/evm-indexer/app/queue"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/ethclient"

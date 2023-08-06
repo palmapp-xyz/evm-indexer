@@ -1,7 +1,7 @@
 package block
 
 import (
-	"github.com/denniswon/validationcloud/app/db"
+	"github.com/palmapp-xyz/evm-indexer/app/db"
 	"github.com/ethereum/go-ethereum/common/hexutil"
 	"github.com/ethereum/go-ethereum/core/types"
 )

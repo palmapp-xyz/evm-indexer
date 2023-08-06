@@ -6,7 +6,7 @@ import (
 
 	"github.com/go-redis/redis/v8"
 
-	cfg "github.com/denniswon/validationcloud/app/config"
+	cfg "github.com/palmapp-xyz/evm-indexer/app/config"
 	"github.com/ethereum/go-ethereum/ethclient"
 )
 
