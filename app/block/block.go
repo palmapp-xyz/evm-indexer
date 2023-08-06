@@ -98,7 +98,6 @@ func ProcessBlockContent(client *ethclient.Client, block *types.Block, _db *gorm
 					tx,
 					_db,
 					redis,
-					publishable,
 					status,
 					returnValChan)
 
