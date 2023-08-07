@@ -6,8 +6,8 @@ import (
 
 	"github.com/go-redis/redis/v8"
 
-	cfg "github.com/palmapp-xyz/evm-indexer/app/config"
 	"github.com/ethereum/go-ethereum/ethclient"
+	cfg "github.com/palmxyz/indexer/app/config"
 )
 
 // Connect to blockchain node, either using HTTP or Websocket connection

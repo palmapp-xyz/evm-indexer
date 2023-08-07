@@ -7,10 +7,10 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/palmapp-xyz/evm-indexer/app/data"
-	"github.com/palmapp-xyz/evm-indexer/app/rest/graph/model"
 	"github.com/gin-gonic/gin"
 	"github.com/lib/pq"
+	"github.com/palmxyz/indexer/app/data"
+	"github.com/palmxyz/indexer/app/rest/graph/model"
 	"gorm.io/gorm"
 )
 

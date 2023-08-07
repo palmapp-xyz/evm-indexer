@@ -7,10 +7,10 @@ import (
 	"os/signal"
 	"syscall"
 
-	blk "github.com/palmapp-xyz/evm-indexer/app/block"
 	"github.com/gookit/color"
+	blk "github.com/palmxyz/indexer/app/block"
 
-	"github.com/palmapp-xyz/evm-indexer/app/rest"
+	"github.com/palmxyz/indexer/app/rest"
 )
 
 // Run - Application to be invoked from main runner using this function

@@ -1,4 +1,4 @@
-module github.com/palmapp-xyz/evm-indexer
+module github.com/palmxyz/indexer
 
 go 1.20
 

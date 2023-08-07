@@ -6,7 +6,7 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/palmapp-xyz/evm-indexer/app/data"
+	"github.com/palmxyz/indexer/app/data"
 )
 
 // SubscriptionRequest - Real time data subscription/ unsubscription request

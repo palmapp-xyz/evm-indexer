@@ -1,5 +1,5 @@
 syntax = "proto3";
-option go_package = "github.com/palmapp-xyz/evm-indexer/app/proto";
+option go_package = "github.com/palmxyz/indexer/app/proto";
 
 import 'transaction.proto';
 

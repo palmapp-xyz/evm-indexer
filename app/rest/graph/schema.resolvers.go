@@ -10,12 +10,12 @@ import (
 	"strconv"
 	"strings"
 
-	cmn "github.com/palmapp-xyz/evm-indexer/app/common"
-	cfg "github.com/palmapp-xyz/evm-indexer/app/config"
-	_db "github.com/palmapp-xyz/evm-indexer/app/db"
-	"github.com/palmapp-xyz/evm-indexer/app/rest/graph/generated"
-	"github.com/palmapp-xyz/evm-indexer/app/rest/graph/model"
 	"github.com/ethereum/go-ethereum/common"
+	cmn "github.com/palmxyz/indexer/app/common"
+	cfg "github.com/palmxyz/indexer/app/config"
+	_db "github.com/palmxyz/indexer/app/db"
+	"github.com/palmxyz/indexer/app/rest/graph/generated"
+	"github.com/palmxyz/indexer/app/rest/graph/model"
 )
 
 func (r *queryResolver) BlockByHash(ctx context.Context, hash string) (*model.Block, error) {

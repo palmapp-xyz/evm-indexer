@@ -5,12 +5,12 @@ import (
 	"log"
 	"sync"
 
-	cfg "github.com/palmapp-xyz/evm-indexer/app/config"
-	d "github.com/palmapp-xyz/evm-indexer/app/data"
-	"github.com/palmapp-xyz/evm-indexer/app/db"
-	q "github.com/palmapp-xyz/evm-indexer/app/queue"
-	"github.com/palmapp-xyz/evm-indexer/app/rest/graph"
 	"github.com/go-redis/redis/v8"
+	cfg "github.com/palmxyz/indexer/app/config"
+	d "github.com/palmxyz/indexer/app/data"
+	"github.com/palmxyz/indexer/app/db"
+	q "github.com/palmxyz/indexer/app/queue"
+	"github.com/palmxyz/indexer/app/rest/graph"
 	"gorm.io/gorm"
 )
 

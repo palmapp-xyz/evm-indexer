@@ -8,8 +8,8 @@ import (
 	"sync"
 	"time"
 
-	d "github.com/palmapp-xyz/evm-indexer/app/data"
 	"github.com/lib/pq"
+	d "github.com/palmxyz/indexer/app/data"
 	"gorm.io/gorm"
 
 	"github.com/go-redis/redis/v8"

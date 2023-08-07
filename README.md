@@ -1,8 +1,8 @@
 <!-- omit in toc -->
 
-# evm-indexer
+# indexer
 
-evm-indexer is a service which uses the Ethereum JSON-RPC API to store the following information in a local datastore (postgres) for the most recent 50 blocks (or more) and provide REST and Graphql APIs:
+indexer is a service which uses the Ethereum JSON-RPC API to store the following information in a local datastore (postgres) for the most recent 50 blocks (or more) and provide REST and Graphql APIs:
 
 - Get and store **the block** and **all transaction hashes** in the block
 - Get and store all **events related to each transaction in each block**
@@ -76,9 +76,9 @@ The services provided:
 ## Installation
 
 ```bash
-git clone git@github.com:palmapp-xyz/evm-indexer.git
+git clone git@github.com:palmxyz/indexer.git
 
-cd evm-indexer
+cd indexer
 
 cp .env.example .env
 ```
@@ -107,7 +107,7 @@ DB_USER=user
 DB_PASSWORD=password
 DB_HOST=x.x.x.x
 DB_PORT=5432
-DB_NAME=evm-indexer
+DB_NAME=indexer
 
 RedisConnection=tcp
 RedisAddress=x.x.x.x:6379
@@ -121,7 +121,7 @@ BlockRange=1000
 TimeRange=21600
 ```
 
-- Build `evm-indexer`
+- Build `indexer`
 
 ```bash
 go mod tidy
@@ -129,10 +129,10 @@ go mod tidy
 make build
 ```
 
-- Run `evm-indexer`
+- Run `indexer`
 
 ```bash
-./evm-indexer
+./indexer
 
 # or to build & run together
 make run
@@ -157,7 +157,7 @@ curl -s localhost:7000/v1/synced | jq
 
 ## Usage
 
-`evm-indexer` exposes REST & GraphQL API for querying historical block, transaction & event related data. It can also play role of real time notification engine, when subscribed to supported topics.
+`indexer` exposes REST & GraphQL API for querying historical block, transaction & event related data. It can also play role of real time notification engine, when subscribed to supported topics.
 
 ### Historical Block Data ( REST API )
 

@@ -6,12 +6,12 @@ import (
 	"log"
 	"runtime"
 
-	cfg "github.com/palmapp-xyz/evm-indexer/app/config"
-	d "github.com/palmapp-xyz/evm-indexer/app/data"
-	q "github.com/palmapp-xyz/evm-indexer/app/queue"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/gammazero/workerpool"
+	cfg "github.com/palmxyz/indexer/app/config"
+	d "github.com/palmxyz/indexer/app/data"
+	q "github.com/palmxyz/indexer/app/queue"
 	"gorm.io/gorm"
 )
 

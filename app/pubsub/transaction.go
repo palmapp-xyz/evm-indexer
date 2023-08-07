@@ -8,9 +8,9 @@ import (
 	"sync"
 	"time"
 
-	d "github.com/palmapp-xyz/evm-indexer/app/data"
 	"github.com/go-redis/redis/v8"
 	"github.com/gorilla/websocket"
+	d "github.com/palmxyz/indexer/app/data"
 	"gorm.io/gorm"
 )
 

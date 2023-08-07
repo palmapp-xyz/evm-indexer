@@ -4,8 +4,8 @@ import (
 	"context"
 	"log"
 
-	d "github.com/palmapp-xyz/evm-indexer/app/data"
-	"github.com/palmapp-xyz/evm-indexer/app/db"
+	d "github.com/palmxyz/indexer/app/data"
+	"github.com/palmxyz/indexer/app/db"
 )
 
 // PublishBlock - Attempts to publish block data to Redis pubsub channel

@@ -11,7 +11,7 @@ graphql_gen:
 	pushd app/rest; gqlgen generate; popd
 
 build:
-	go build -o evm-indexer
+	go build -o indexer
 
 run: build
-	./evm-indexer
+	./indexer

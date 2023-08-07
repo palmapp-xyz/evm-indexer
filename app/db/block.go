@@ -4,8 +4,8 @@ import (
 	"errors"
 	"log"
 
-	d "github.com/palmapp-xyz/evm-indexer/app/data"
-	q "github.com/palmapp-xyz/evm-indexer/app/queue"
+	d "github.com/palmxyz/indexer/app/data"
+	q "github.com/palmxyz/indexer/app/queue"
 	"gorm.io/gorm"
 )
 

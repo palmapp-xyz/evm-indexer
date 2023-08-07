@@ -1,10 +1,10 @@
 package block
 
 import (
-	c "github.com/palmapp-xyz/evm-indexer/app/common"
-	"github.com/palmapp-xyz/evm-indexer/app/db"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
+	c "github.com/palmxyz/indexer/app/common"
+	"github.com/palmxyz/indexer/app/db"
 )
 
 // BuildPackedTx - Putting all information, the service will keep for one tx

@@ -4,8 +4,8 @@ import (
 	"context"
 	"log"
 
-	d "github.com/palmapp-xyz/evm-indexer/app/data"
-	"github.com/palmapp-xyz/evm-indexer/app/db"
+	d "github.com/palmxyz/indexer/app/data"
+	"github.com/palmxyz/indexer/app/db"
 )
 
 // PublishEvents - Iterate over all events & try to publish them on

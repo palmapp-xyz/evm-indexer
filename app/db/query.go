@@ -6,8 +6,8 @@ import (
 	"math"
 	"strings"
 
-	"github.com/palmapp-xyz/evm-indexer/app/data"
 	"github.com/ethereum/go-ethereum/common"
+	"github.com/palmxyz/indexer/app/data"
 	"gorm.io/gorm"
 )
 

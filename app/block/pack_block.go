@@ -1,9 +1,9 @@
 package block
 
 import (
-	"github.com/palmapp-xyz/evm-indexer/app/db"
 	"github.com/ethereum/go-ethereum/common/hexutil"
 	"github.com/ethereum/go-ethereum/core/types"
+	"github.com/palmxyz/indexer/app/db"
 )
 
 // BuildPackedBlock - Builds struct holding whole block data i.e.

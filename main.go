@@ -4,7 +4,7 @@ import (
 	"log"
 	"path/filepath"
 
-	"github.com/palmapp-xyz/evm-indexer/app"
+	"github.com/palmxyz/indexer/app"
 )
 
 func main() {

@@ -16,17 +16,17 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/go-redis/redis/v8"
 	"github.com/gorilla/websocket"
-	cmn "github.com/palmapp-xyz/evm-indexer/app/common"
-	cfg "github.com/palmapp-xyz/evm-indexer/app/config"
-	d "github.com/palmapp-xyz/evm-indexer/app/data"
-	"github.com/palmapp-xyz/evm-indexer/app/db"
-	ps "github.com/palmapp-xyz/evm-indexer/app/pubsub"
-	"github.com/palmapp-xyz/evm-indexer/app/rest/graph/generated"
+	cmn "github.com/palmxyz/indexer/app/common"
+	cfg "github.com/palmxyz/indexer/app/config"
+	d "github.com/palmxyz/indexer/app/data"
+	"github.com/palmxyz/indexer/app/db"
+	ps "github.com/palmxyz/indexer/app/pubsub"
+	"github.com/palmxyz/indexer/app/rest/graph/generated"
 	"gorm.io/gorm"
 
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
-	"github.com/palmapp-xyz/evm-indexer/app/rest/graph"
+	"github.com/palmxyz/indexer/app/rest/graph"
 )
 
 // RunHTTPServer - Holds definition for all REST API(s) to be exposed
@@ -886,7 +886,7 @@ func RunHTTPServer(_db *gorm.DB, _status *d.StatusHolder, _redisClient *redis.Cl
 
 	router.GET("/v1/graphql-playground", func(c *gin.Context) {
 
-		gpg := playground.Handler("evm-indexer", "/v1/graphql")
+		gpg := playground.Handler("indexer", "/v1/graphql")
 
 		if gpg == nil {
 			c.JSON(http.StatusInternalServerError, gin.H{

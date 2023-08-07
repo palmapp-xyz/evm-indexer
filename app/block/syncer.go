@@ -6,13 +6,13 @@ import (
 	"sort"
 	"time"
 
-	cfg "github.com/palmapp-xyz/evm-indexer/app/config"
-	d "github.com/palmapp-xyz/evm-indexer/app/data"
-	"github.com/palmapp-xyz/evm-indexer/app/db"
-	q "github.com/palmapp-xyz/evm-indexer/app/queue"
 	"github.com/ethereum/go-ethereum/ethclient"
 	"github.com/gammazero/workerpool"
 	"github.com/gookit/color"
+	cfg "github.com/palmxyz/indexer/app/config"
+	d "github.com/palmxyz/indexer/app/data"
+	"github.com/palmxyz/indexer/app/db"
+	q "github.com/palmxyz/indexer/app/queue"
 	"gorm.io/gorm"
 )
 
