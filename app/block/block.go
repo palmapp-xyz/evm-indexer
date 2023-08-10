@@ -24,23 +24,25 @@ func ProcessBlockContent(client *ethclient.Client, block *types.Block, _db *gorm
 		// Constructing block data to published & persisted
 		packedBlock := BuildPackedBlock(block, txns)
 
-		// -- 3 step pub/sub attempt
-		//
-		// Attempting to publish whole block data to redis pubsub channel
+		if (publishable) {
+			// -- 3 step pub/sub attempt
+			//
+			// Attempting to publish whole block data to redis pubsub channel
 
-		// 1. Asking queue whether we need to publish block or not
-		if !queue.CanPublish(block.NumberU64()) {
-			return packedBlock, true
-		}
+			// 1. Asking queue whether we need to publish block or not
+			if !queue.CanPublish(block.NumberU64()) {
+				return packedBlock, true
+			}
 
-		// 2. Attempting to publish block on Pub/Sub topic
-		if !PublishBlock(packedBlock, redis) {
-			return nil, false
-		}
+			// 2. Attempting to publish block on Pub/Sub topic
+			if !PublishBlock(packedBlock, redis) {
+				return nil, false
+			}
 
-		// 3. Marking this block as published
-		if !queue.Published(block.NumberU64()) {
-			return nil, false
+			// 3. Marking this block as published
+			if !queue.Published(block.NumberU64()) {
+				return nil, false
+			}
 		}
 
 		// -- done, with publishing on Pub/Sub topic
